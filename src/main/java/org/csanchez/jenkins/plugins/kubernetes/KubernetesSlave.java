@@ -281,7 +281,8 @@ public class KubernetesSlave extends AbstractCloudSlave {
             return;
         }
 
-        Thread.sleep(1000);
+        LOGGER.log(Level.INFO, "Sleeping 5 seconds before sending SIGTERM");
+        Thread.sleep(5000);
 
         if (deletePod) {
             deleteSlavePod(listener, client);
