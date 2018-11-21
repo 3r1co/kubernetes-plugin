@@ -269,6 +269,7 @@ public class KubernetesSlave extends AbstractCloudSlave {
         // wait a bit for disconnection to avoid stack traces in logs
         try {
             disconnected.get(DISCONNECTION_TIMEOUT, TimeUnit.SECONDS);
+            LOGGER.log(Level.INFO, "Retrieved disconnect signal.");
         } catch (Exception e) {
             String msg = String.format("Ignoring error waiting for agent disconnection %s: %s", name, e.getMessage());
             LOGGER.log(Level.INFO, msg, e);
@@ -280,9 +281,6 @@ public class KubernetesSlave extends AbstractCloudSlave {
             listener.fatalError(msg);
             return;
         }
-
-        LOGGER.log(Level.INFO, "Sleeping 5 seconds before sending SIGTERM");
-        Thread.sleep(5000);
 
         if (deletePod) {
             deleteSlavePod(listener, client);
@@ -297,6 +295,10 @@ public class KubernetesSlave extends AbstractCloudSlave {
     }
 
     private void deleteSlavePod(TaskListener listener, KubernetesClient client) throws IOException {
+
+        LOGGER.log(Level.INFO, "Sleeping 1 seconds before sending SIGTERM to Pod");
+        Thread.sleep(1000);
+
         String actualNamespace = getNamespace() == null ? client.getNamespace() : getNamespace();
         try {
             Boolean deleted = client.pods().inNamespace(actualNamespace).withName(name).delete();
