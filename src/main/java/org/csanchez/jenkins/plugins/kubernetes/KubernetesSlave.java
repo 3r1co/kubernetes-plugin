@@ -281,6 +281,8 @@ public class KubernetesSlave extends AbstractCloudSlave {
             return;
         }
 
+        Thread.sleep(1000);
+
         if (deletePod) {
             deleteSlavePod(listener, client);
         } else {
